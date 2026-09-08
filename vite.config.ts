@@ -16,3 +16,4 @@ export default defineConfig({
     host: true,
   },
 });
+/Cadastro-CL-Contransin/
