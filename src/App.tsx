@@ -1,11 +1,35 @@
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import path from 'path';
+// https://vitejs.dev/config/
+export default defineConfig({
+  base: '/Cadastro-CL-Contransin/',
+  plugins: [react()],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
+  server: {
+    port: 5173,
+    strictPort: true,
+    host: true,
+  },
+});
+2. Corrigir o Roteador em 
+src/App.tsx
+Troque BrowserRouter por HashRouter. O HashRouter é o método padrão e mais seguro para GitHub Pages, pois impede erros de tela branca e erros 404 ao navegar ou recarregar (F5):
+
+tsx
+
+
 import { useState } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ToastProvider } from './components/ui/Toast';
 import { PiecesProvider, usePieces } from './hooks/usePieces';
 import { AccessGate } from './components/AccessGate';
 import { Sidebar } from './components/Sidebar';
 import { Header } from './components/Header';
-
 // Pages
 import { Dashboard } from './pages/Dashboard';
 import { Pieces } from './pages/Pieces';
@@ -15,25 +39,17 @@ import { PieceDetails } from './pages/PieceDetails';
 import { Export } from './pages/Export';
 import { Backup } from './pages/Backup';
 import { Settings } from './pages/Settings';
-
 function AppContent() {
   const { totalPieces } = usePieces();
   const [globalSearch, setGlobalSearch] = useState('');
-
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-slate-50 dark:bg-slate-950 font-sans text-slate-900 dark:text-slate-100">
-      {/* Sidebar with official branding & icon */}
       <Sidebar totalPieces={totalPieces} />
-
-      {/* Main Content Area */}
       <div className="flex flex-col flex-1 h-full min-w-0 overflow-hidden">
-        {/* Sticky Header */}
         <Header
           globalSearchValue={globalSearch}
           onGlobalSearchChange={setGlobalSearch}
         />
-
-        {/* Scrollable Page Body */}
         <main className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8">
           <Routes>
             <Route path="/" element={<Dashboard />} />
@@ -59,19 +75,17 @@ function AppContent() {
     </div>
   );
 }
-
 export function App() {
   return (
     <ToastProvider>
       <PiecesProvider>
         <AccessGate>
-          <BrowserRouter>
+          <HashRouter>
             <AppContent />
-          </BrowserRouter>
+          </HashRouter>
         </AccessGate>
       </PiecesProvider>
     </ToastProvider>
   );
 }
-
 export default App;
